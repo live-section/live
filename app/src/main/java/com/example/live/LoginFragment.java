@@ -40,24 +40,32 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         final TextView loginEmail = view.findViewById(R.id.loginEmail);
-        TextView loginPass = view.findViewById(R.id.loginPassword);
+        final TextView loginPass = view.findViewById(R.id.loginPassword);
 
         Button loginButton = view.findViewById(R.id.loginButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                CharSequence loginEmailText = loginEmail.getText();
                 boolean isValidEmail = isValidEmail(loginEmail.getText());
                 if (!isValidEmail) {
                     Toast invalidEmailToast = Toast.makeText(getActivity().getApplicationContext(), invalidEmailMessage, Toast.LENGTH_LONG);
                     invalidEmailToast.show();
                 } else {
-                    Toast zafigPleaseNotice = Toast.makeText(getActivity().getApplicationContext(), "Zafig if you got this far remove this line and keep working lmao", Toast.LENGTH_LONG);
+                    // Validate the user's email & password.
+                    if (validateUserLogin(loginEmailText, loginPass.getText())) {
+                        // Navigate to the Home fragment.
+                    }
                 }
             }
         });
 
         return view;
+    }
+
+    private boolean validateUserLogin(CharSequence email, CharSequence password) {
+        return true;
     }
 
 }
