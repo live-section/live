@@ -4,6 +4,7 @@ package com.example.live;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -43,6 +44,7 @@ public class LoginFragment extends Fragment {
         final TextView loginPass = view.findViewById(R.id.loginPassword);
 
         Button loginButton = view.findViewById(R.id.loginButton);
+        Button registerButton = view.findViewById(R.id.registerButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,6 +60,13 @@ public class LoginFragment extends Fragment {
                         // Navigate to the Home fragment.
                     }
                 }
+            }
+        });
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
             }
         });
 
