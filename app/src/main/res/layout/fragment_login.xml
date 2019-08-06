@@ -71,7 +71,7 @@
         app:layout_constraintTop_toBottomOf="@+id/loginPassword" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/navigateToRegistrationButton"
         android:layout_width="110dp"
         android:layout_height="71dp"
         android:layout_marginStart="36dp"

@@ -13,10 +13,22 @@
         <action
             android:id="@+id/action_loginFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_liveUserActivity"
+            app:destination="@id/liveUserActivity" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
         android:name="com.example.live.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_liveUserActivity"
+            app:destination="@id/liveUserActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/liveUserActivity"
+        android:name="com.example.live.LiveUserActivity"
+        android:label="activity_live_user"
+        tools:layout="@layout/activity_live_user" />
 </navigation>

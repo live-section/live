@@ -21,13 +21,6 @@ import android.widget.Toast;
  */
 public class LoginFragment extends Fragment {
 
-    final CharSequence invalidEmailMessage = "That's not a real email...";
-
-    public static boolean isValidEmail(CharSequence target) {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    }
-
-
     public LoginFragment() {
         // Required empty public constructor
     }
@@ -38,26 +31,26 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        final View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
 
-        final TextView loginEmail = view.findViewById(R.id.loginEmail);
-        final TextView loginPass = view.findViewById(R.id.loginPassword);
+        final TextView loginEmail = fragmentView.findViewById(R.id.loginEmail);
+        final TextView loginPass = fragmentView.findViewById(R.id.loginPassword);
 
-        Button loginButton = view.findViewById(R.id.loginButton);
-        Button registerButton = view.findViewById(R.id.registerButton);
+        Button loginButton = fragmentView.findViewById(R.id.loginButton);
+        Button registerButton = fragmentView.findViewById(R.id.navigateToRegistrationButton);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 CharSequence loginEmailText = loginEmail.getText();
-                boolean isValidEmail = isValidEmail(loginEmail.getText());
+                boolean isValidEmail = (!TextUtils.isEmpty(loginEmailText) && Patterns.EMAIL_ADDRESS.matcher(loginEmailText).matches());
                 if (!isValidEmail) {
-                    Toast invalidEmailToast = Toast.makeText(getActivity().getApplicationContext(), invalidEmailMessage, Toast.LENGTH_LONG);
-                    invalidEmailToast.show();
+                    loginEmail.setError("The email you've entered is invalid!");
                 } else {
                     // Validate the user's email & password.
                     if (validateUserLogin(loginEmailText, loginPass.getText())) {
                         // Navigate to the Home fragment.
+                        Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_liveUserActivity);
                     }
                 }
             }
@@ -66,11 +59,11 @@ public class LoginFragment extends Fragment {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_loginFragment_to_registerFragment);
+                Navigation.findNavController(fragmentView).navigate(R.id.action_loginFragment_to_registerFragment);
             }
         });
 
-        return view;
+        return fragmentView;
     }
 
     private boolean validateUserLogin(CharSequence email, CharSequence password) {
