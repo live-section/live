@@ -3,23 +3,34 @@ package com.example.live;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
-
+    private FirebaseAuth mAuth;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -29,6 +40,9 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
 
@@ -63,7 +77,20 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if (!errorFound) {
-                    Navigation.findNavController(fragmentView).navigate(R.id.action_registerFragment_to_liveUserActivity);
+                    mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                            .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "createUserWithEmail:success");
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        Navigation.findNavController(fragmentView).navigate(R.id.action_registerFragment_to_liveUserActivity);
+                                    } else {
+                                        Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 }
             }
         });
