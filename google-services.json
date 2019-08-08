@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "758291303846",
+    "firebase_url": "https://live-da4d5.firebaseio.com",
+    "project_id": "live-da4d5",
+    "storage_bucket": "live-da4d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758291303846:android:feef0d8537eca368",
+        "android_client_info": {
+          "package_name": "com.example.live"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758291303846-9foal1fu6klkth16v60hlhm5869pt4jd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBFOPuU3c57qcRJD2Oa2OSgCd_aDfqhYg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758291303846-9foal1fu6klkth16v60hlhm5869pt4jd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
