@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -60,6 +61,15 @@ public class NewPostFragment extends Fragment {
                 }
             }
         });
+
+        Button backButton = fragmentView.findViewById(R.id.newPostBackButton);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Navigation.findNavController(fragmentView).navigate(R.id.action_newPostFragment_to_PostsFragment);
+            }
+        });
+
 
         return fragmentView;
     }

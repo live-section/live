@@ -3,11 +3,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/user_content_nav_graph"
-    app:startDestination="@id/newPostFragment">
+    app:startDestination="@id/PostsFragment">
+
+    <fragment
+        android:id="@+id/PostsFragment"
+        android:name="com.example.live.PostFragment"
+        android:label="fragment_post"
+        tools:layout="@layout/fragment_post" >
+        <action
+            android:id="@+id/action_PostsFragment_to_newPostFragment"
+            app:destination="@id/newPostFragment" />
+        <action
+            android:id="@+id/action_PostsFragment_to_myPostsFragment"
+            app:destination="@id/myPostsFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/newPostFragment"
         android:name="com.example.live.NewPostFragment"
         android:label="fragment_new_post"
-        tools:layout="@layout/fragment_new_post" />
+        tools:layout="@layout/fragment_new_post" >
+        <action
+            android:id="@+id/action_newPostFragment_to_PostsFragment"
+            app:destination="@id/PostsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/myPostsFragment"
+        android:name="com.example.live.MyPostsFragment"
+        android:label="fragment_my_posts"
+        tools:layout="@layout/fragment_my_posts" >
+        <action
+            android:id="@+id/action_myPostsFragment_to_PostsFragment"
+            app:destination="@id/PostsFragment" />
+    </fragment>
+
+
+
+
+
 </navigation>
