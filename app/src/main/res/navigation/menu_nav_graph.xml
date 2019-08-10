@@ -20,5 +20,13 @@
         android:name="com.example.live.MyPostsFragment"
         android:label="My Posts"
         tools:layout="@layout/fragment_my_posts" />
+    <activity
+        android:id="@+id/nav_mainActivity_from_liveUserActivity"
+        android:name="com.example.live.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <action
+        android:id="@+id/action_global_nav_mainActivity_from_liveUserActivity"
+        app:destination="@id/nav_mainActivity_from_liveUserActivity" />
 
 </navigation>

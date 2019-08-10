@@ -35,6 +35,15 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:menu="@menu/posts_menu" />
+        app:menu="@menu/posts_menu">
+
+        <Button
+            android:id="@+id/menu_sign_out_btn"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:text="Sign out"
+            android:layout_gravity="bottom"
+            style="@style/Widget.AppCompat.Button.Colored" />
+    </com.google.android.material.navigation.NavigationView>
 
 </androidx.drawerlayout.widget.DrawerLayout>

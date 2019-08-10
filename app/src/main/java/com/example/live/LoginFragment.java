@@ -31,6 +31,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  */
 public class LoginFragment extends Fragment {
     private FirebaseAuth mAuth;
+    private View fragmentView;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -95,7 +96,19 @@ public class LoginFragment extends Fragment {
             }
         });
 
+        this.fragmentView = fragmentView;
+
         return fragmentView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        // TODO - move user to inside to save time or w/e?
+        if (mAuth.getCurrentUser() != null) {
+            Navigation.findNavController(fragmentView).navigate(R.id.action_loginFragment_to_liveUserActivity);
+        }
     }
 
     private boolean validateUserLogin(CharSequence email, CharSequence password) {

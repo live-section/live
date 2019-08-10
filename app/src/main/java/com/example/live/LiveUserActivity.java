@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class LiveUserActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
@@ -55,6 +56,14 @@ public class LiveUserActivity extends AppCompatActivity implements
         navigationView = findViewById(R.id.navigationView);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+
+        findViewById(R.id.menu_sign_out_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseAuth.getInstance().signOut();
+                navController.navigate(R.id.action_global_nav_mainActivity_from_liveUserActivity);
+            }
+        });
 
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
 

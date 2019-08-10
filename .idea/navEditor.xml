@@ -8,7 +8,12 @@
             <LayoutPositions>
               <option name="myPositions">
                 <map>
-                  <entry key="MyPostFragment">
+                  <entry key="action_global_nav_mainActivity_from_liveUserActivity">
+                    <value>
+                      <LayoutPositions />
+                    </value>
+                  </entry>
+                  <entry key="nav_MyPost_Fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -20,7 +25,7 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="NewPostFragment">
+                  <entry key="nav_NewPost_Fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
@@ -32,13 +37,25 @@
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="PostFragment">
+                  <entry key="nav_Post_Fragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
                             <option name="x" value="12" />
                             <option name="y" value="12" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="nav_mainActivity_from_liveUserActivity">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="256" />
+                            <option name="y" value="368" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -56,25 +73,12 @@
                 <map>
                   <entry key="liveUserActivity">
                     <value>
-                      <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="500" />
-                            <option name="y" value="54" />
-                          </Point>
-                        </option>
-                      </LayoutPositions>
+                      <LayoutPositions />
                     </value>
                   </entry>
                   <entry key="loginFragment">
                     <value>
                       <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="12" />
-                            <option name="y" value="54" />
-                          </Point>
-                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_loginFragment_to_liveUserActivity">
@@ -95,12 +99,6 @@
                   <entry key="registerFragment">
                     <value>
                       <LayoutPositions>
-                        <option name="myPosition">
-                          <Point>
-                            <option name="x" value="256" />
-                            <option name="y" value="12" />
-                          </Point>
-                        </option>
                         <option name="myPositions">
                           <map>
                             <entry key="action_registerFragment_to_liveUserActivity">
