@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_nav_graph"
+    app:startDestination="@id/nav_Post_Fragment">
+
+    <fragment
+        android:id="@+id/nav_Post_Fragment"
+        android:name="com.example.live.PostFragment"
+        android:label="Live!"
+        tools:layout="@layout/fragment_post" />
+    <fragment
+        android:id="@+id/nav_NewPost_Fragment"
+        android:name="com.example.live.NewPostFragment"
+        android:label="New Post"
+        tools:layout="@layout/fragment_new_post" />
+    <fragment
+        android:id="@+id/nav_MyPost_Fragment"
+        android:name="com.example.live.MyPostsFragment"
+        android:label="My Posts"
+        tools:layout="@layout/fragment_my_posts" />
+
+</navigation>

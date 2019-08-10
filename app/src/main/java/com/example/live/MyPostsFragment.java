@@ -59,15 +59,6 @@ public class MyPostsFragment extends Fragment {
 
         recyclerView.setHasFixedSize(true);
 
-        Button myPostsButton = rootView.findViewById(R.id.myPostsBackButton);
-
-        myPostsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_myPostsFragment_to_PostsFragment);
-            }
-        });
-
         // Inflate the layout for this fragment
         return rootView;
     }

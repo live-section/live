@@ -13,14 +13,4 @@
         tools:layout_editor_absoluteX="152dp"
         tools:layout_editor_absoluteY="68dp"></androidx.recyclerview.widget.RecyclerView>
 
-    <Button
-        android:id="@+id/myPostsBackButton"
-        android:layout_width="110dp"
-        android:layout_height="71dp"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="28dp"
-        android:fontFamily="@font/allerta"
-        android:text="Back"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body2" />
-
 </FrameLayout>

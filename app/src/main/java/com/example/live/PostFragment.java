@@ -1,6 +1,7 @@
 package com.example.live;
 
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,11 @@ import java.util.List;
  */
 public class PostFragment extends Fragment {
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
     public PostFragment() {
         // Required empty public constructor
@@ -61,24 +67,6 @@ public class PostFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         recyclerView.setHasFixedSize(true);
-
-        Button newPostButton = rootView.findViewById(R.id.navigateToNewPostButton);
-
-        newPostButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(rootView).navigate(R.id.action_PostsFragment_to_newPostFragment);
-            }
-        });
-
-        Button myPostsButton = rootView.findViewById(R.id.navigateToMyPostsButton);
-
-        myPostsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(rootView).navigate(R.id.action_PostsFragment_to_myPostsFragment);
-            }
-        });
 
         return rootView;
     }
