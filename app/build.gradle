@@ -39,6 +39,8 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment:$nav_version"
     implementation "androidx.navigation:navigation-ui:$nav_version"
     implementation 'com.google.firebase:firebase-auth:18.1.0'
+    implementation 'com.google.firebase:firebase-storage:18.1.1'
+    implementation 'com.google.firebase:firebase-database:18.0.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.squareup.okhttp:okhttp:2.2.0'
     implementation 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'

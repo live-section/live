@@ -1,31 +1,63 @@
 package com.example.live;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.util.Date;
 
 import static android.app.Activity.RESULT_OK;
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class NewPostFragment extends Fragment {
+    private static final int READ_REQUEST_CODE = 42;
+
     static final int REQUEST_IMAGE_CAPTURE = 1;
     final static int RESAULT_SUCCESS = 0;
 
     ImageView selectedPictureImgView;
+    EditText postTitleEditText;
+    EditText postDescriptionEditText;
+
+    private FirebaseStorage mStorage;
+    private FirebaseDatabase mDatabase;
+    private boolean hasImageBeenSet = false;
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -37,10 +69,48 @@ public class NewPostFragment extends Fragment {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
 
-            selectedPictureImgView.setImageBitmap(imageBitmap);
-            selectedPictureImgView.setVisibility(View.VISIBLE);
+            setPostImage(imageBitmap);
+        }
+
+        // The ACTION_OPEN_DOCUMENT intent was sent with the request code
+        // READ_REQUEST_CODE. If the request code seen here doesn't match, it's the
+        // response to some other intent, and the code below shouldn't run at all.
+
+        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // The document selected by the user won't be returned in the intent.
+            // Instead, a URI to that document will be contained in the return intent
+            // provided to this method as a parameter.
+            // Pull that URI using resultData.getData().
+            Uri uri = null;
+            if (data != null) {
+                uri = data.getData();
+                Log.i(TAG, "Uri: " + uri.toString());
+                try {
+                    Bitmap imageBitmap = getBitmapFromUri(uri);
+                    setPostImage(imageBitmap);
+                }
+                catch (Exception ex) {
+                    Toast.makeText(getContext(), "Failed to load picture. Make sure the selected photo is a real photo or try a different one.", Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
+
+    private void setPostImage(Bitmap imageBitmap) {
+        this.hasImageBeenSet = true;
+        selectedPictureImgView.setImageBitmap(imageBitmap);
+        selectedPictureImgView.setVisibility(View.VISIBLE);
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getActivity().getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
+    }
+
 
 
     @Override
@@ -51,6 +121,8 @@ public class NewPostFragment extends Fragment {
 
         Button uploadPhotoButton = fragmentView.findViewById(R.id.newPostUploadPhotoButton);
         this.selectedPictureImgView = fragmentView.findViewById(R.id.selectedPictureImgView);
+        this.postTitleEditText = fragmentView.findViewById(R.id.newPostTitleTxt);
+        this.postDescriptionEditText = fragmentView.findViewById(R.id.newPostDescriptionTxt);
 
         uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,7 +134,120 @@ public class NewPostFragment extends Fragment {
             }
         });
 
+        fragmentView.findViewById(R.id.newPostTakePictureButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                performFileSearch();
+            }
+        });
+
+        fragmentView.findViewById(R.id.newPostSubmitButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isPostInvalid = false;
+
+                CharSequence postTitle = postTitleEditText.getText();
+                CharSequence postDescription = postDescriptionEditText.getText();
+
+                if (TextUtils.isEmpty(postTitle)) {
+                    isPostInvalid = true;
+                    postTitleEditText.setError("Title must not be empty!");
+                }
+
+                if (TextUtils.isEmpty(postDescription) && !hasImageBeenSet) {
+                    isPostInvalid = true;
+                    postDescriptionEditText.setError("A post must have a description, or an image that describes it.");
+                }
+
+                if (!isPostInvalid) {
+                    mDatabase = FirebaseDatabase.getInstance();
+                    DatabaseReference dbRef = mDatabase.getReference();
+
+                    String postId = dbRef.child("posts").push().getKey();
+
+                    Post post = new Post(postTitle.toString(), postDescription.toString(), postId, "HOW WOULD I FUCKING KNOW", new Date());
+
+                    dbRef.child(postId).setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            if (hasImageBeenSet) {
+                                mStorage = FirebaseStorage.getInstance();
+
+                                // Create a storage reference from our app
+                                StorageReference storageRef = mStorage.getReference();
+
+                                // Create a reference to the new picture we want to upload
+                                StorageReference picRef = storageRef.child("post_images/" + postId);
+
+                                // Get the data from an ImageView as bytes
+                                selectedPictureImgView.setDrawingCacheEnabled(true);
+                                selectedPictureImgView.buildDrawingCache();
+                                Bitmap bitmap = ((BitmapDrawable) selectedPictureImgView.getDrawable()).getBitmap();
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] data = baos.toByteArray();
+
+                                UploadTask uploadTask = picRef.putBytes(data);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                        onPostPhotoUploadFailed();
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        onNewPostCreated(fragmentView);
+                                    }
+                                });
+                            } else {
+                                onNewPostCreated(fragmentView);
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            onPostCreationFailed();
+                        }
+                    });
+                }
+            }
+        });
+
         return fragmentView;
     }
 
+    private void onPostPhotoUploadFailed() {
+        Toast.makeText(getContext(), "There was an issue with uploading the photo.", Toast.LENGTH_LONG).show();
+    }
+
+    private void onPostCreationFailed() {
+        Toast.makeText(getContext(), "Failed to create post. Make sure you have a working internet connection.", Toast.LENGTH_LONG).show();
+    }
+
+    private void onNewPostCreated(View fragmentView) {
+        Toast.makeText(getContext(), "Ze Avad Omg!..!.!!. *-* ^-^", Toast.LENGTH_LONG).show();
+        Navigation.findNavController(fragmentView).navigate(R.id.nav_MyPost_Fragment);
+    }
+
+    /**
+     * Fires an intent to spin up the "file chooser" UI and select an image.
+     */
+    private void performFileSearch() {
+
+        // ACTION_OPEN_DOCUMENT is the intent to choose a file via the system's file
+        // browser.
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
+        // Filter to only show results that can be "opened", such as a
+        // file (as opposed to a list of contacts or timezones)
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+
+        // Filter to show only images, using the image MIME data type.
+        // If one wanted to search for ogg vorbis files, the type would be "audio/ogg".
+        // To search for all documents available via installed storage providers,
+        // it would be "*/*".
+        intent.setType("image/*");
+
+        startActivityForResult(intent, READ_REQUEST_CODE);
+    }
 }

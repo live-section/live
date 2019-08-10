@@ -14,12 +14,12 @@ public class Post {
     // TODOD : support image and not url
 
 
-    public Post(String tit, String hh, String getit, String ussr, Date hellyeah) {
-        title = tit;
-        text = hh;
-        image = getit;
-        user = ussr;
-        date = hellyeah;
+    public Post(String title, String text, String image, String user, Date date) {
+        this.title = title;
+        this.text = text;
+        this.image = image;
+        this.user = user;
+        this.date = date;
     }
 
     public String getTitle() {

@@ -8,56 +8,78 @@
     tools:context=".NewPostFragment">
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="286dp"
-        android:layout_height="49dp"
+        android:id="@+id/newPostDescriptionTxt"
+        android:layout_width="379dp"
+        android:layout_height="106dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
         android:ems="10"
         android:gravity="start|top"
-        android:hint="Post Title..."
+        android:hint="What's going in your head 🤔 "
         android:inputType="textMultiLine"
+        android:maxLength="280"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/newPostUploadPhotoButton" />
 
     <Button
         android:id="@+id/newPostUploadPhotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="8dp"
-        android:text="Upload a photo"
-        app:layout_constraintEnd_toStartOf="@+id/newPostTakePictureButton"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="252dp"
+        android:text="... Or take a picture!"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedPictureImgView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/newPostTakePictureButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginTop="252dp"
+        android:layout_marginEnd="248dp"
         android:text="Select a photo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/selectedPictureImgView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/selectedPictureImgView"
         android:layout_width="255dp"
         android:layout_height="227dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
-        android:src="@android:drawable/ic_menu_upload"
-        android:visibility="invisible"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/aaaaaaaaaaaaaaa" />
+
+    <Button
+        android:id="@+id/newPostSubmitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="GO LIVE"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/newPostDescriptionTxt"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <EditText
+        android:id="@+id/newPostTitleTxt"
+        android:layout_width="377dp"
+        android:layout_height="44dp"
+        android:ems="10"
+        android:hint="Title"
+        android:inputType="textPersonName"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="308dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
