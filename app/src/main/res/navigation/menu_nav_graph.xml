@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/nav_Post_Fragment"
         android:name="com.example.live.PostFragment"
-        android:label="Live!"
+        android:label="Live!  Posts"
         tools:layout="@layout/fragment_post" />
     <fragment
         android:id="@+id/nav_NewPost_Fragment"

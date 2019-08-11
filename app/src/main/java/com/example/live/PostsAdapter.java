@@ -3,6 +3,8 @@ package com.example.live;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.ViewGroup;
@@ -16,8 +18,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.ArrayList;
 import java.util.List;
-public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> {
+public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> implements Filterable {
 
     // Your holder should contain a member variable
     // for any view that will be set as you render a row
@@ -46,16 +49,15 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             subItem = itemView.findViewById(R.id.sub_item);
 
         }
-
-        public void setListeners() {
-        }
     }
 
     private List<Post> mPosts;
+    private List<Post> PostListFull;
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public PostsAdapter(List<Post> data) {
         mPosts = data;
+        PostListFull = new ArrayList<>(data);
     }
 
     // Create new views (invoked by the layout manager)
@@ -73,7 +75,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
     public void onBindViewHolder(PostsAdapter.ViewHolder viewHolder, int position) {
         // Get the data model based on position
         Post post = mPosts.get(position);
-
 
         // *** bind ***
         // Set item views based on your views and data model
@@ -106,9 +107,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
             post.setExpanded(!post.isExpanded());
             notifyItemChanged(position);
         });
-
-        //viewHolder.setListeners()
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -119,5 +117,45 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         return mPosts.size();
     }
 
+    @Override
+    public Filter getFilter() {
+        return postFilter;
+    }
 
+    private Filter postFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            Log.d("tag", "filtering");
+
+            List<Post> filteredList = new ArrayList<>();
+
+            if (charSequence == null || charSequence.length() == 0)
+            {
+                filteredList.addAll(PostListFull);
+            }
+            else{
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+
+                for (Post item : PostListFull){
+                    if (item.getText().toLowerCase().contains(filterPattern) || item.getTitle().toLowerCase().contains(filterPattern))
+                    {
+                        Log.d("tag", "adding item to filter");
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            mPosts.clear();
+            mPosts.addAll((List)filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 }

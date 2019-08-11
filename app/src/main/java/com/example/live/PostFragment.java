@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class PostFragment extends Fragment {
 
+    public static PostsAdapter adapter;
 
     @Override
     public void onAttach(Context context) {
@@ -49,7 +50,7 @@ public class PostFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerView);
 
         // Create adapter passing in the sample user data
-        PostsAdapter adapter = new PostsAdapter(posts);
+        adapter = new PostsAdapter(posts);
 
         // Removes blinks
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -70,5 +71,4 @@ public class PostFragment extends Fragment {
 
         return rootView;
     }
-
 }

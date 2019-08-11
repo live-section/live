@@ -31,8 +31,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         private TextView titleTextView;
         private TextView textTextView;
         private TextView dateTextView;
-        private ImageView imageView, imageDelete, imageEdit;
-        private View subItem;
+        private ImageView imageView, imageDelete;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -41,13 +40,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
             textTextView = itemView.findViewById(R.id.sub_item_text);
             dateTextView = itemView.findViewById(R.id.sub_item_date);
             imageView = itemView.findViewById(R.id.post_image);
-            subItem = itemView.findViewById(R.id.sub_item);
             imageDelete = itemView.findViewById(R.id.img_delete);
-            imageEdit = itemView.findViewById(R.id.img_edit);
-
-        }
-
-        public void setListeners() {
         }
     }
 
@@ -74,10 +67,8 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         // Get the data model based on position
         Post post = mPosts.get(position);
 
-
         // *** bind ***
         // Set item views based on your views and data model
-        viewHolder.subItem.setVisibility(post.isExpanded() ? View.VISIBLE : View.GONE);
         viewHolder.titleTextView.setText(post.getTitle());
         viewHolder.textTextView.setText(post.getText());
         viewHolder.dateTextView.setText("Posted on : " + post.getDate());
@@ -101,22 +92,14 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
                     });
         }
 
-
         viewHolder.imageDelete.setOnClickListener(v -> {
              removeItem(position);
-        });
-
-        viewHolder.imageEdit.setOnClickListener(v -> {
-            editItem(position);
         });
 
         viewHolder.itemView.setOnClickListener(v -> {
             post.setExpanded(!post.isExpanded());
             notifyItemChanged(position);
         });
-
-        //viewHolder.setListeners()
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)
@@ -134,9 +117,5 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         notifyItemRangeChanged(position, mPosts.size());
 //		notifyDataSetChanged();
     }
-
-    public void editItem(int position) {
-    }
-
 
 }

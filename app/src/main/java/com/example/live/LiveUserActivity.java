@@ -1,6 +1,7 @@
 package com.example.live;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -20,14 +21,15 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.SearchView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.ArrayList;
+
 public class LiveUserActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
-
-    public Toolbar toolbar;
 
     public DrawerLayout drawerLayout;
 
@@ -39,22 +41,23 @@ public class LiveUserActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_user);
-        setupNavigation();
+
+        configureToolbar();
+        configureNavigationDrawer();
+
     }
 
-
-    // Setting Up One Time Navigation
-    private void setupNavigation() {
-
-        toolbar = findViewById(R.id.my_toolbar);
+    private void configureToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionbar = getSupportActionBar();
+        actionbar.setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
 
+    private void configureNavigationDrawer() {
         drawerLayout = findViewById(R.id.drawer_layout);
-
         navigationView = findViewById(R.id.navigationView);
-
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
 
         findViewById(R.id.menu_sign_out_btn).setOnClickListener(new View.OnClickListener() {
@@ -66,11 +69,9 @@ public class LiveUserActivity extends AppCompatActivity implements
         });
 
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout);
-
         NavigationUI.setupWithNavController(navigationView, navController);
 
         navigationView.setNavigationItemSelectedListener(this);
-
     }
 
     @Override
@@ -121,5 +122,29 @@ public class LiveUserActivity extends AppCompatActivity implements
         }
         return true;
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d("tag", "setting up menu");
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_app_bar, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.post_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                Log.d("tag", "setting up query filter");
+                PostFragment.adapter.getFilter().filter(s);
+                return false;
+            }
+        });
+        return true;
     }
 }

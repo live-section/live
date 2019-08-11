@@ -4,13 +4,16 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
 
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -61,5 +64,17 @@ public class MyPostsFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "searchview BEGONE from my posts");
+        super.onCreate(savedInstanceState); setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        Log.d("tag", "on preperation of my posts ydig");
+        menu.findItem(R.id.post_search).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 }

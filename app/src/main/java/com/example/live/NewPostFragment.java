@@ -18,6 +18,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -249,5 +250,17 @@ public class NewPostFragment extends Fragment {
         intent.setType("image/*");
 
         startActivityForResult(intent, READ_REQUEST_CODE);
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "searchview BEGONE from new post");
+        super.onCreate(savedInstanceState); setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        Log.d("tag", "on preperation of new posts ydig");
+        menu.findItem(R.id.post_search).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
     }
 }
