@@ -28,8 +28,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -57,7 +57,6 @@ public class NewPostFragment extends Fragment {
     EditText postDescriptionEditText;
 
     private FirebaseStorage mStorage;
-    private FirebaseDatabase mDatabase;
     private boolean hasImageBeenSet = false;
 
     public NewPostFragment() {
@@ -161,16 +160,19 @@ public class NewPostFragment extends Fragment {
                 }
 
                 if (!isPostInvalid) {
-                    mDatabase = FirebaseDatabase.getInstance();
-                    DatabaseReference dbRef = mDatabase.getReference();
+                    Post post = new Post(postTitle.toString(), postDescription.toString(), null, "HOW WOULD I FUCKING KNOW", new Date());
 
-                    String postId = dbRef.child("posts").push().getKey();
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-                    Post post = new Post(postTitle.toString(), postDescription.toString(), postId, "HOW WOULD I FUCKING KNOW", new Date());
-
-                    dbRef.child(postId).setValue(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    db.collection("posts").add(post).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                         @Override
-                        public void onSuccess(Void aVoid) {
+                        public void onSuccess(DocumentReference documentReference) {
+                            String newPostId = documentReference.getId();
+                            Log.d(TAG, "New post added with ID: " + documentReference.getId());
+
+                            // TODO - how tf do we link to the storage lol
+                            post.setImage(newPostId);
+
                             if (hasImageBeenSet) {
                                 mStorage = FirebaseStorage.getInstance();
 
@@ -178,7 +180,7 @@ public class NewPostFragment extends Fragment {
                                 StorageReference storageRef = mStorage.getReference();
 
                                 // Create a reference to the new picture we want to upload
-                                StorageReference picRef = storageRef.child("post_images/" + postId);
+                                StorageReference picRef = storageRef.child("post_images/" + newPostId);
 
                                 // Get the data from an ImageView as bytes
                                 selectedPictureImgView.setDrawingCacheEnabled(true);
@@ -207,6 +209,7 @@ public class NewPostFragment extends Fragment {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            Log.w(TAG, "Error adding document", e);
                             onPostCreationFailed();
                         }
                     });

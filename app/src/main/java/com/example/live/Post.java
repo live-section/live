@@ -38,6 +38,10 @@ public class Post {
         return image;
     }
 
+    public void setImage(String img) {
+        this.image = img;
+    }
+
     public void setExpanded(boolean expanded) {
         this.expanded = expanded;
     }

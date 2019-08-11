@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -40,10 +41,13 @@ dependencies {
     implementation "androidx.navigation:navigation-ui:$nav_version"
     implementation 'com.google.firebase:firebase-auth:18.1.0'
     implementation 'com.google.firebase:firebase-storage:18.1.1'
-    implementation 'com.google.firebase:firebase-database:18.0.1'
+    implementation 'com.google.firebase:firebase-firestore:20.2.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.squareup.okhttp:okhttp:2.2.0'
     implementation 'com.squareup.okhttp:okhttp-urlconnection:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+
+    implementation 'com.android.support:multidex:1.0.3'
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin
