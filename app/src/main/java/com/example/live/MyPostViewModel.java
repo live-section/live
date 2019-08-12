@@ -35,6 +35,7 @@ public class MyPostViewModel extends ViewModel {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("posts")
+                .whereEqualTo("user", "HOW WOULD I FUCKING KNOW")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
