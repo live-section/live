@@ -57,6 +57,7 @@ public class NewPostFragment extends Fragment {
     EditText postDescriptionEditText;
 
     private FirebaseStorage mStorage;
+    private FirebaseFirestore mDb;
     private boolean hasImageBeenSet = false;
 
     public NewPostFragment() {
@@ -162,46 +163,18 @@ public class NewPostFragment extends Fragment {
                 if (!isPostInvalid) {
                     Post post = new Post(postTitle.toString(), postDescription.toString(), null, "HOW WOULD I FUCKING KNOW", new Date());
 
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    mDb = FirebaseFirestore.getInstance();
 
-                    db.collection("posts").add(post).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    DocumentReference documentReference = mDb.collection("posts").document();
+                    String newPostId = documentReference.getId();
+
+                    mDb.collection("posts").document(newPostId).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                            String newPostId = documentReference.getId();
+                        public void onSuccess(Void aVoid) {
                             Log.d(TAG, "New post added with ID: " + documentReference.getId());
 
-                            // TODO - how tf do we link to the storage lol
-                            post.setImage(newPostId);
-
                             if (hasImageBeenSet) {
-                                mStorage = FirebaseStorage.getInstance();
-
-                                // Create a storage reference from our app
-                                StorageReference storageRef = mStorage.getReference();
-
-                                // Create a reference to the new picture we want to upload
-                                StorageReference picRef = storageRef.child("post_images/" + newPostId);
-
-                                // Get the data from an ImageView as bytes
-                                selectedPictureImgView.setDrawingCacheEnabled(true);
-                                selectedPictureImgView.buildDrawingCache();
-                                Bitmap bitmap = ((BitmapDrawable) selectedPictureImgView.getDrawable()).getBitmap();
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                                byte[] data = baos.toByteArray();
-
-                                UploadTask uploadTask = picRef.putBytes(data);
-                                uploadTask.addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception exception) {
-                                        onPostPhotoUploadFailed();
-                                    }
-                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                    @Override
-                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                        onNewPostCreated(fragmentView);
-                                    }
-                                });
+                                uploadPostImgToFirestore(newPostId, fragmentView);
                             } else {
                                 onNewPostCreated(fragmentView);
                             }
@@ -218,6 +191,69 @@ public class NewPostFragment extends Fragment {
         });
 
         return fragmentView;
+    }
+
+    private void uploadPostImgToFirestore(String newPostId, View fragmentView) {
+        mStorage = FirebaseStorage.getInstance();
+
+        // Create a storage reference from our app
+        StorageReference storageRef = mStorage.getReference();
+
+        // Create a reference to the new picture we want to upload
+        StorageReference picRef = storageRef.child("post_images/" + newPostId);
+
+        // Get the data from an ImageView as bytes
+        selectedPictureImgView.setDrawingCacheEnabled(true);
+        selectedPictureImgView.buildDrawingCache();
+        Bitmap bitmap = ((BitmapDrawable) selectedPictureImgView.getDrawable()).getBitmap();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] data = baos.toByteArray();
+
+        UploadTask uploadTask = picRef.putBytes(data);
+        uploadTask.addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                onPostPhotoUploadFailed();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                picRef.getDownloadUrl().addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        onGetDownloadUrlFailed();
+                    }
+                }).addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        linkPostPhotoToPost(newPostId, uri, fragmentView);
+                    }
+                });
+            }
+        });
+    }
+
+    private void onGetDownloadUrlFailed() {
+        Toast.makeText(getContext(), "Failed to get the post image. Make sure you have a working active internet connection.", Toast.LENGTH_LONG).show();
+    }
+
+    private void linkPostPhotoToPost(String newPostId, Uri photoUri, View fragmentView) {
+        this.mDb.collection("posts").document(newPostId).update("image", photoUri.toString()).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                onLinkPostToImageFailed();
+            }
+        }).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                onNewPostCreated(fragmentView);
+            }
+        });
+    }
+
+    private void onLinkPostToImageFailed() {
+        Toast.makeText(getContext(), "Failed to save the post. Make sure you have a working active internet connection.", Toast.LENGTH_LONG).show();
     }
 
     private void onPostPhotoUploadFailed() {
