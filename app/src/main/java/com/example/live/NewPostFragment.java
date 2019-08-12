@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -165,16 +166,18 @@ public class NewPostFragment extends Fragment {
 
                     mDb = FirebaseFirestore.getInstance();
 
-                    DocumentReference documentReference = mDb.collection("posts").document();
+                    CollectionReference postsCollectionRef = mDb.collection("posts");
+
+                    DocumentReference documentReference = postsCollectionRef.document();
                     String newPostId = documentReference.getId();
 
-                    mDb.collection("posts").document(newPostId).set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    documentReference.set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "New post added with ID: " + documentReference.getId());
+                            Log.d(TAG, "New post added with ID: " + newPostId);
 
                             if (hasImageBeenSet) {
-                                uploadPostImgToFirestore(newPostId, fragmentView);
+                                uploadPostImgToFirestore(newPostId, documentReference, fragmentView);
                             } else {
                                 onNewPostCreated(fragmentView);
                             }
@@ -193,7 +196,7 @@ public class NewPostFragment extends Fragment {
         return fragmentView;
     }
 
-    private void uploadPostImgToFirestore(String newPostId, View fragmentView) {
+    private void uploadPostImgToFirestore(String newPostId, DocumentReference docRef, View fragmentView) {
         mStorage = FirebaseStorage.getInstance();
 
         // Create a storage reference from our app
@@ -227,7 +230,7 @@ public class NewPostFragment extends Fragment {
                 }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        linkPostPhotoToPost(newPostId, uri, fragmentView);
+                        linkPostPhotoToPost(newPostId, docRef, uri, fragmentView);
                     }
                 });
             }
@@ -238,8 +241,8 @@ public class NewPostFragment extends Fragment {
         Toast.makeText(getContext(), "Failed to get the post image. Make sure you have a working active internet connection.", Toast.LENGTH_LONG).show();
     }
 
-    private void linkPostPhotoToPost(String newPostId, Uri photoUri, View fragmentView) {
-        this.mDb.collection("posts").document(newPostId).update("image", photoUri.toString()).addOnFailureListener(new OnFailureListener() {
+    private void linkPostPhotoToPost(String newPostId, DocumentReference docRef, Uri photoUri, View fragmentView) {
+        docRef.update("image", photoUri.toString()).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 onLinkPostToImageFailed();
