@@ -58,12 +58,8 @@ public class PostFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        // Initialize posts with temp values
-        List<Post> posts = Post.createPostsList(20);
-
         //inflater.inflate(R.layout.item_post, container, false);
         View rootView = inflater.inflate(R.layout.fragment_post, container, false);
-        replaceRecyclerAdapter(posts, rootView);
 
         this.rootView = rootView;
         return rootView;

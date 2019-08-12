@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,7 +35,7 @@ public class MyPostsFragment extends Fragment {
         //View fragmentView = inflater.inflate(R.layout.fragment_my_posts, container, false);
 
         // Initialize posts with temp values
-        List<Post> posts = Post.createPostsList2(2);
+        List<Post> posts = new ArrayList<>();
 
         //inflater.inflate(R.layout.item_post, container, false);
         View rootView = inflater.inflate(R.layout.fragment_my_posts, container, false);
