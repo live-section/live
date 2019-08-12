@@ -1,12 +1,18 @@
 package com.example.live;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -18,33 +24,63 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class MyPostsFragment extends Fragment {
+
+    public MyPostsAdapter adapter;
+    private MyPostViewModel viewModel;
+    private RecyclerView recyclerView;
+    private View rootView;
 
     public MyPostsFragment() {
         // Required empty public constructor
     }
 
     @Override
+    public
+    void onActivityCreated(
+            @Nullable Bundle savedInstanceState
+    ) {
+        super.onActivityCreated(savedInstanceState);
+        viewModel = ViewModelProviders.of(this).get(MyPostViewModel.class);
+
+        viewModel.getPosts().observe(this, posts -> {
+            this.replaceRecyclerAdapter(posts, this.rootView);
+        });
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        //View fragmentView = inflater.inflate(R.layout.fragment_my_posts, container, false);
-
-        // Initialize posts with temp values
-        List<Post> posts = new ArrayList<>();
-
-        //inflater.inflate(R.layout.item_post, container, false);
         View rootView = inflater.inflate(R.layout.fragment_my_posts, container, false);
 
+        this.rootView = rootView;
+        return rootView;
+
+
+    }
+
+    @Override public void onCreate(Bundle savedInstanceState) {
+        Log.d("tag", "searchview BEGONE from my posts");
+        super.onCreate(savedInstanceState); setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        Log.d("tag", "on preperation of my posts ydig");
+        menu.findItem(R.id.post_search).setVisible(false);
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    public void replaceRecyclerAdapter(List<Post> posts, View rootView) {
         // 1. get a reference to recyclerView
-        RecyclerView recyclerView = (RecyclerView) rootView.findViewById(R.id.myPostsRecyclerView);
+        this.recyclerView = (RecyclerView) rootView.findViewById(R.id.myPostsRecyclerView);
 
         // Create adapter passing in the sample user data
-        MyPostsAdapter adapter = new MyPostsAdapter(posts);
+        adapter = new MyPostsAdapter(posts);
 
         // Removes blinks
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
@@ -61,21 +97,13 @@ public class MyPostsFragment extends Fragment {
         // Attach the adapter to the recyclerview to populate items
         recyclerView.setAdapter(adapter);
 
+        Drawable icon = rootView.getResources().getDrawable(R.drawable.baseline_delete_black_36dp);
+        ColorDrawable background = new ColorDrawable(Color.LTGRAY);
+
+        ItemTouchHelper itemTouchHelper = new
+                ItemTouchHelper(new SwipeToDeleteMyPostCallback(adapter, icon, background));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         recyclerView.setHasFixedSize(true);
-
-        // Inflate the layout for this fragment
-        return rootView;
-    }
-
-    @Override public void onCreate(Bundle savedInstanceState) {
-        Log.d("tag", "searchview BEGONE from my posts");
-        super.onCreate(savedInstanceState); setHasOptionsMenu(true);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(@NonNull Menu menu) {
-        Log.d("tag", "on preperation of my posts ydig");
-        menu.findItem(R.id.post_search).setVisible(false);
-        super.onPrepareOptionsMenu(menu);
     }
 }

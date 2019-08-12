@@ -1,5 +1,6 @@
 package com.example.live;
 
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,8 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         private TextView titleTextView;
         private TextView textTextView;
         private TextView dateTextView;
-        private ImageView imageView, imageDelete;
+        private ImageView imageView;
+        private View subItem;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -40,7 +42,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
             textTextView = itemView.findViewById(R.id.sub_item_text);
             dateTextView = itemView.findViewById(R.id.sub_item_date);
             imageView = itemView.findViewById(R.id.post_image);
-            imageDelete = itemView.findViewById(R.id.img_delete);
+            subItem = itemView.findViewById(R.id.sub_item);
         }
     }
 
@@ -57,7 +59,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
                                                         int viewType) {
         View view = LayoutInflater
                 .from(parent.getContext())
-                .inflate(R.layout.item_my_post, parent, false);
+                .inflate(R.layout.item_post, parent, false);
         return new ViewHolder(view);
     }
 
@@ -69,6 +71,7 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
 
         // *** bind ***
         // Set item views based on your views and data model
+        viewHolder.subItem.setVisibility(post.isExpanded() ? View.VISIBLE : View.GONE);
         viewHolder.titleTextView.setText(post.getTitle());
         viewHolder.textTextView.setText(post.getText());
         viewHolder.dateTextView.setText("Posted on : " + post.getDate());
@@ -92,10 +95,6 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
                     });
         }
 
-        viewHolder.imageDelete.setOnClickListener(v -> {
-             removeItem(position);
-        });
-
         viewHolder.itemView.setOnClickListener(v -> {
             post.setExpanded(!post.isExpanded());
             notifyItemChanged(position);
@@ -115,7 +114,5 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         mPosts.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mPosts.size());
-//		notifyDataSetChanged();
     }
-
 }
