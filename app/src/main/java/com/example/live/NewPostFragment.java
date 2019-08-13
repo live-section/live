@@ -269,7 +269,7 @@ public class NewPostFragment extends Fragment {
 
     private void onNewPostCreated(View fragmentView) {
         Toast.makeText(getContext(), "Ze Avad Omg!..!.!!. *-* ^-^", Toast.LENGTH_LONG).show();
-        Navigation.findNavController(fragmentView).navigate(R.id.nav_MyPost_Fragment);
+        Navigation.findNavController(fragmentView).navigate(R.id.nav_Post_Fragment);
     }
 
     /**

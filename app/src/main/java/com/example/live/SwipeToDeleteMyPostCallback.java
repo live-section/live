@@ -17,12 +17,14 @@ public class SwipeToDeleteMyPostCallback extends ItemTouchHelper.SimpleCallback 
     private MyPostsAdapter adapter;
     private Drawable icon;
     private final ColorDrawable background;
+    private MyPostViewModel viewModel;
 
-    public SwipeToDeleteMyPostCallback(MyPostsAdapter adapter, Drawable icon, ColorDrawable background) {
+    public SwipeToDeleteMyPostCallback(MyPostsAdapter adapter, Drawable icon, ColorDrawable background, MyPostViewModel viewModel) {
         super(0, ItemTouchHelper.LEFT);
         this.adapter = adapter;
         this.icon = icon;
         this.background = background;
+        this.viewModel = viewModel;
     }
 
     @Override
@@ -33,6 +35,7 @@ public class SwipeToDeleteMyPostCallback extends ItemTouchHelper.SimpleCallback 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
+        viewModel.RemovePost(adapter.getPostAt(position));
         adapter.removeItem(position);
     }
 

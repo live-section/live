@@ -115,4 +115,11 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, mPosts.size());
     }
+
+    public Post getPostAt(int position)
+    {
+        if(mPosts != null && position < mPosts.size())
+            return mPosts.get(position);
+        else return null;
+    }
 }

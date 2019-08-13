@@ -97,12 +97,14 @@ public class MyPostsFragment extends Fragment {
         // Attach the adapter to the recyclerview to populate items
         recyclerView.setAdapter(adapter);
 
+
         Drawable icon = rootView.getResources().getDrawable(R.drawable.baseline_delete_black_36dp);
         ColorDrawable background = new ColorDrawable(Color.LTGRAY);
 
         ItemTouchHelper itemTouchHelper = new
-                ItemTouchHelper(new SwipeToDeleteMyPostCallback(adapter, icon, background));
+                ItemTouchHelper(new SwipeToDeleteMyPostCallback(adapter, icon, background, viewModel));
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
 
         recyclerView.setHasFixedSize(true);
     }

@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -36,6 +38,7 @@ public class PostViewModel extends ViewModel {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("posts")
+                .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -45,7 +48,8 @@ public class PostViewModel extends ViewModel {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Map<String, Object> objectData = document.getData();
-                                currentPosts.add(new Post((String)(objectData.get("title")), (String)(objectData.get("text")), (String)(objectData.get("image")), (String)(objectData.get("user")), (Date) /*(objectData.get("date")*/ new Date()));
+                                Timestamp ts = (Timestamp)objectData.get("date");
+                                currentPosts.add(new Post((String)(objectData.get("title")), (String)(objectData.get("text")), (String)(objectData.get("image")), (String)(objectData.get("user")), ts.toDate()));
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
 

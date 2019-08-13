@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -35,6 +36,7 @@ public class MyPostViewModel extends ViewModel {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("posts")
+                // Hey Dinno little tip here : have you tried knowing what the current user is?
                 .whereEqualTo("user", "HOW WOULD I FUCKING KNOW")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -45,7 +47,9 @@ public class MyPostViewModel extends ViewModel {
 
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Map<String, Object> objectData = document.getData();
-                                currentPosts.add(new Post((String)(objectData.get("title")), (String)(objectData.get("text")), (String)(objectData.get("image")), (String)(objectData.get("user")), (Date) /*(objectData.get("date")*/ new Date()));
+                                // TODO : fix date here lol or remove it
+                                Timestamp ts = (Timestamp)objectData.get("date");
+                                currentPosts.add(new Post((String)(objectData.get("title")), (String)(objectData.get("text")), (String)(objectData.get("image")), (String)(objectData.get("user")), ts.toDate()));
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
 
@@ -55,5 +59,45 @@ public class MyPostViewModel extends ViewModel {
                         }
                     }
                 });
+    }
+
+    public void RemovePost(Post id) {
+        if (id == null) {
+            Log.w(TAG, "Why are you trying to delete null post, this isn't ideal.");
+        }
+        else{
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+            db.collection("posts")
+                    // Hey Dinno little tip here : have you tried knowing what the current user is?
+                    .whereEqualTo("user", id.getuser())
+                    .whereEqualTo("title", id.getTitle())
+                    .whereEqualTo("text", id.getText())
+                    .whereEqualTo("date", id.getDate())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Post> currentPosts = new ArrayList<>();
+
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+
+                                    db.collection("posts")
+                                            .document(document.getId())
+                                            .delete()
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    Log.d(TAG, "post id " + document.getId() + " BEGONE!");
+                                                }
+                                            });
+                                }
+                            } else {
+                                Log.w(TAG, "Error deleting document.", task.getException());
+                            }
+                        }
+                    });
+        }
     }
 }
