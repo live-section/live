@@ -24,11 +24,11 @@
             android:background="@drawable/baseline_person_white_48dp" />
 
         <TextView
-            android:id="@+id/profile_name"
+            android:id="@+id/user_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
-            android:text="gay@gmail.com"
+            android:text="useremail"
             android:textColor="@color/cardview_light_background"
             android:textSize="14sp" />
 

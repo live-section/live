@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -31,9 +32,9 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  */
 public class RegisterFragment extends Fragment {
     private UserRepository userRepository;
+    ProgressBar mProgressBar;
 
     public RegisterFragment() {
-        // Required empty public constructor
         userRepository = UserRepository.getInstance();
     }
 
@@ -43,6 +44,9 @@ public class RegisterFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
+
+        this.mProgressBar = fragmentView.findViewById(R.id.register_progBar);
+        this.mProgressBar.setVisibility(View.INVISIBLE);
 
         Button button = fragmentView.findViewById(R.id.completeRegistrationButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -75,6 +79,7 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if (!errorFound) {
+                    mProgressBar.setVisibility(View.VISIBLE);
                     userRepository.createUser(emailEditText.getText().toString(), passwordEditText.getText().toString())
                             .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                 @Override

@@ -32,8 +32,11 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PostRepository {
     private MutableLiveData<List<Post>> allPosts;
+    private MutableLiveData<List<Post>> allMyPosts;
+
     private FirebaseFirestore firestoreDb;
     private static PostRepository instance;
+    private UserRepository userRepository;
 
     public static PostRepository getInstance() {
         if (instance == null) {
@@ -45,10 +48,11 @@ public class PostRepository {
 
     private PostRepository() {
         firestoreDb = FirebaseFirestore.getInstance();
+        userRepository = UserRepository.getInstance();
     }
 
     public LiveData<List<Post>> registerToAllMyPosts() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = userRepository.getCurrentUser();
 
         if (user == null) {
             return null;
@@ -58,11 +62,15 @@ public class PostRepository {
     }
 
     public LiveData<List<Post>> registerToAllPosts(@Nullable String userEmail) {
-        if (allPosts != null) {
+        if (userEmail == null && allPosts != null) {
             return allPosts;
         }
 
-        allPosts = new MutableLiveData<>();
+        if (userEmail != null && allMyPosts != null) {
+            return allMyPosts;
+        }
+
+        MutableLiveData posts = new MutableLiveData<>();
 
         Query baseFirebaseQuery = firestoreDb.collection("posts")
                 .orderBy("date", Query.Direction.DESCENDING);
@@ -87,7 +95,7 @@ public class PostRepository {
                                 Log.d(TAG, document.getId() + " => " + document.getData());
                             }
 
-                            allPosts.setValue(currentPosts);
+                            posts.setValue(currentPosts);
 
                             firebaseQuery
                                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -104,7 +112,7 @@ public class PostRepository {
                                                 tempPosts.add(DeserializeToPost(document));
                                             }
 
-                                            allPosts.setValue(tempPosts);
+                                            posts.setValue(tempPosts);
                                         }
                                     });
                         } else {
@@ -113,7 +121,16 @@ public class PostRepository {
                     }
                 });
 
-        return allPosts;
+        // We make this very final differentiation.
+        // If we requested posts for the currently logged user we store them in all posts variable.
+        // Otherwise, we put it in another one that is used for the user.
+        if (userEmail == null) {
+            allPosts = posts;
+        } else {
+            allMyPosts = posts;
+        }
+
+        return posts;
     }
 
     public Task<Void> removePost(Post id) {

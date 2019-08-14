@@ -49,8 +49,6 @@ public class PostFragment extends Fragment {
 
         viewModel.subscribeToAllPosts().observe(this, posts -> {
             this.replaceRecyclerAdapter(posts, this.rootView);
-
-            Toast.makeText(getContext(), "New posts just came live!!!", Toast.LENGTH_SHORT).show();
         });
     }
 

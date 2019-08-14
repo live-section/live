@@ -9,28 +9,32 @@
     tools:context=".NewPostFragment">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
+        android:layout_width="337dp"
+        android:layout_height="215dp"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="32dp"
         android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/selectedPictureImgView"
-            android:layout_width="255dp"
-            android:layout_height="227dp"
+            android:layout_width="188dp"
+            android:layout_height="match_parent"
             android:visibility="visible"
             app:srcCompat="@drawable/ic_img_holder" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="284dp"
+        android:layout_width="332dp"
+        android:layout_height="105dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="2dp"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/newPostTakePictureButton"
@@ -51,16 +55,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="320dp"
+        android:layout_width="314dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="18dp"
         android:gravity="center"
         android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <EditText
             android:id="@+id/newPostTitleTxt"
-            android:layout_width="387dp"
+            android:layout_width="253dp"
             android:layout_height="wrap_content"
             android:autofillHints=""
             android:ems="10"
@@ -69,7 +75,7 @@
 
         <EditText
             android:id="@+id/newPostDescriptionTxt"
-            android:layout_width="388dp"
+            android:layout_width="252dp"
             android:layout_height="match_parent"
             android:gravity="start|top"
             android:hint="What's going in your head 🤔 "
@@ -82,13 +88,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="478dp"
+        android:layout_width="192dp"
+        android:layout_height="104dp"
+        android:layout_marginEnd="52dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="16dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <Button
             android:id="@+id/newPostSubmitButton"
@@ -99,17 +106,15 @@
 
         <ProgressBar
             android:id="@+id/newPost_progBar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_gravity="bottom"
-            app:layout_anchorGravity="bottom"
-            android:indeterminate="false"
             android:layout_margin="10dp"
-            />
+            android:indeterminate="false"
+            app:layout_anchorGravity="bottom" />
+
 
     </LinearLayout>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

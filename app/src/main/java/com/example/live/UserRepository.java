@@ -34,4 +34,8 @@ public class UserRepository {
     public Task<AuthResult> createUser(String email, String password) {
         return mAuth.createUserWithEmailAndPassword(email, password);
     }
+
+    public FirebaseUser getCurrentUser() {
+        return mAuth.getCurrentUser();
+    }
 }
