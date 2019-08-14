@@ -87,8 +87,21 @@
         android:layout_marginTop="32dp"
         android:text="Register"
         app:layout_constraintEnd_toEndOf="@+id/registrationPassword"
-        app:layout_constraintHorizontal_bias="0.432"
+        app:layout_constraintHorizontal_bias="0.016"
         app:layout_constraintStart_toStartOf="@+id/registrationPassword"
+        app:layout_constraintTop_toBottomOf="@+id/registrationPassword" />
+
+    <ProgressBar
+        android:id="@+id/register_progBar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="121dp"
+        android:layout_height="61dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:indeterminate="false"
+        app:layout_anchorGravity="bottom"
+        app:layout_constraintStart_toEndOf="@+id/completeRegistrationButton"
         app:layout_constraintTop_toBottomOf="@+id/registrationPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

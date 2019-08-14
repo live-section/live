@@ -87,6 +87,7 @@
         android:layout_marginTop="478dp"
         android:gravity="center"
         app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
         tools:layout_editor_absoluteX="16dp">
 
         <Button
@@ -96,6 +97,19 @@
             android:layout_height="wrap_content"
             android:text="GO LIVE" />
 
+        <ProgressBar
+            android:id="@+id/newPost_progBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar"
+            android:layout_gravity="bottom"
+            app:layout_anchorGravity="bottom"
+            android:indeterminate="false"
+            android:layout_margin="10dp"
+            />
+
     </LinearLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

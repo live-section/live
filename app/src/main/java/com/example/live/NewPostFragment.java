@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -59,6 +60,7 @@ public class NewPostFragment extends Fragment {
     ImageView selectedPictureImgView;
     EditText postTitleEditText;
     EditText postDescriptionEditText;
+    ProgressBar mProgressBar;
 
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
@@ -129,6 +131,8 @@ public class NewPostFragment extends Fragment {
         this.selectedPictureImgView = fragmentView.findViewById(R.id.selectedPictureImgView);
         this.postTitleEditText = fragmentView.findViewById(R.id.newPostTitleTxt);
         this.postDescriptionEditText = fragmentView.findViewById(R.id.newPostDescriptionTxt);
+        this.mProgressBar = fragmentView.findViewById(R.id.newPost_progBar);
+        this.mProgressBar.setVisibility(View.INVISIBLE);
 
         uploadPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +170,7 @@ public class NewPostFragment extends Fragment {
                 }
 
                 if (!isPostInvalid) {
+                    mProgressBar.setVisibility(View.VISIBLE);
                     mDb = FirebaseFirestore.getInstance();
 
                     CollectionReference postsCollectionRef = mDb.collection("posts");
@@ -273,7 +278,7 @@ public class NewPostFragment extends Fragment {
     }
 
     private void onNewPostCreated(View fragmentView) {
-        Toast.makeText(getContext(), "Ze Avad Omg!..!.!!. *-* ^-^", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), "Succesfully created new post", Toast.LENGTH_LONG).show();
         Navigation.findNavController(fragmentView).navigate(R.id.nav_Post_Fragment);
     }
 
