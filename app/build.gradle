@@ -48,6 +48,11 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
     implementation 'com.android.support:multidex:1.0.3'
+
+    def room_version = "2.2.0-alpha02"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
+
 }
 
 apply plugin: 'com.google.gms.google-services'  // Google Play services Gradle plugin

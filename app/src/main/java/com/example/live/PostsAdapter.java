@@ -82,7 +82,7 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         viewHolder.subItem.setVisibility(post.isExpanded() ? View.VISIBLE : View.GONE);
         viewHolder.titleTextView.setText(post.getTitle());
         viewHolder.textTextView.setText(post.getText());
-        viewHolder.userTextView.setText("Created by : " + post.getuser());
+        viewHolder.userTextView.setText("Created by : " + post.getUser());
         viewHolder.dateTextView.setText("Posted on : " + post.getDate());
 
         if (post.getImage() != null) {

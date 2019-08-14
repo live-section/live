@@ -1,16 +1,35 @@
 package com.example.live;
 
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.ArrayList;
 import java.util.Date;
 
+@Entity
 public class Post {
+    @PrimaryKey
+    @NonNull
     private String postId;
+
+    @ColumnInfo(name = "title")
     private String title;
+
+    @ColumnInfo(name = "text")
     private String text;
+
+    @ColumnInfo(name = "image")
     private String image;
+
+    @ColumnInfo(name = "user")
     private String user;
+
+    @ColumnInfo(name = "date")
     private Date date;
+
     private boolean expanded;
 
     public Post(String postId, String title, String text, String image, String user, Date date) {
@@ -30,7 +49,7 @@ public class Post {
         return text;
     }
 
-    public String getuser(){return user;}
+    public String getUser(){return user;}
 
     public Date getDate(){return date;}
 
