@@ -32,6 +32,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class LoginFragment extends Fragment {
     private FirebaseAuth mAuth;
     private View fragmentView;
+    private UserRepository userRepository = new UserRepository();
 
     public LoginFragment() {
         // Required empty public constructor
@@ -41,10 +42,6 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -64,16 +61,12 @@ public class LoginFragment extends Fragment {
                 } else {
                     // Validate the user's email & password.
                     if (validateUserLogin(loginEmailText, loginPass.getText())) {
-                        mAuth.signInWithEmailAndPassword(loginEmailText.toString(), loginPass.getText().toString())
+                        userRepository.loginUser(loginEmailText.toString(), loginPass.getText().toString())
                                 // TODO - SHOULD THIS BE this instead of getActivity()? should this be code placed in the fragment
                                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                     @Override
                                     public void onComplete(@NonNull Task<AuthResult> task) {
                                         if (task.isSuccessful()) {
-                                            // Sign in success, update UI with the signed-in user's information
-                                            Log.d(TAG, "signInWithEmail:success");
-                                            FirebaseUser user = mAuth.getCurrentUser();
-
                                             // Navigate to the Home fragment.
                                             Navigation.findNavController(fragmentView).navigate(R.id.action_loginFragment_to_liveUserActivity);
                                         } else {
