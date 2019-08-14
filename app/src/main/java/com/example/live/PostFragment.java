@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class PostFragment extends Fragment {
 
         viewModel.getPosts().observe(this, posts -> {
             this.replaceRecyclerAdapter(posts, this.rootView);
+
+            Toast.makeText(getContext(), "New posts just came live!!!", Toast.LENGTH_SHORT).show();
         });
     }
 
