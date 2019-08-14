@@ -93,8 +93,6 @@ public class MyPostsAdapter extends RecyclerView.Adapter<MyPostsAdapter.ViewHold
                 viewHolder.imageView.setImageBitmap(image);
             }
             else {
-                Picasso.get().setLoggingEnabled(true);
-                Picasso.get().setIndicatorsEnabled(true);
                 Picasso.get()
                         .load(post.getImage())
                         .placeholder(R.drawable.logo)

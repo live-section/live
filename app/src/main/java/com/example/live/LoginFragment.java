@@ -77,6 +77,7 @@ public class LoginFragment extends Fragment {
                                         } else {
                                             // If sign in fails, display a message to the user.
                                             Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                            mProgressBar.setVisibility(View.INVISIBLE);
                                             Toast.makeText(getActivity(), "Login failed. Ensure your email and password are correct.",
                                                     Toast.LENGTH_SHORT).show();
                                         }

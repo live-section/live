@@ -43,6 +43,7 @@ public class LiveUserActivity extends AppCompatActivity implements
 
     public NavigationView navigationView;
     private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private int lastMenuId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class LiveUserActivity extends AppCompatActivity implements
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigationView);
         navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        lastMenuId = R.id.menu_posts;
 
         findViewById(R.id.menu_sign_out_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +92,7 @@ public class LiveUserActivity extends AppCompatActivity implements
 
     @Override
     public boolean onSupportNavigateUp() {
+        lastMenuId = R.id.menu_posts;
         return NavigationUI.navigateUp(Navigation.findNavController(this, R.id.nav_host_fragment), drawerLayout);
     }
 
@@ -105,31 +108,39 @@ public class LiveUserActivity extends AppCompatActivity implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-        menuItem.setChecked(true);
-
-        drawerLayout.closeDrawers();
-
-        int id = menuItem.getItemId();
-
-        switch (id) {
-
-            case R.id.menu_posts:
-                navController.navigate(R.id.nav_Post_Fragment);
-                break;
-
-            case R.id.menu_new_post:
-                navController.navigate(R.id.nav_NewPost_Fragment);
-                break;
-
-            case R.id.menu_my_posts:
-                navController.navigate(R.id.nav_MyPost_Fragment);
-                break;
-
-            case R.id.menu_nav_graph:
-                navController.navigate(R.id.nav_Post_Fragment);
-                break;
-
+        if (lastMenuId == menuItem.getItemId())
+        {
+            drawerLayout.closeDrawers();
         }
+        else
+        {
+            lastMenuId = menuItem.getItemId();
+            menuItem.setChecked(true);
+
+            drawerLayout.closeDrawers();
+
+            int id = menuItem.getItemId();
+
+            switch (id) {
+
+                case R.id.menu_posts:
+                    navController.navigate(R.id.nav_Post_Fragment);
+                    break;
+
+                case R.id.menu_new_post:
+                    navController.navigate(R.id.nav_NewPost_Fragment);
+                    break;
+
+                case R.id.menu_my_posts:
+                    navController.navigate(R.id.nav_MyPost_Fragment);
+                    break;
+
+                case R.id.menu_nav_graph:
+                    navController.navigate(R.id.nav_Post_Fragment);
+                    break;
+            }
+        }
+
         return true;
 
     }

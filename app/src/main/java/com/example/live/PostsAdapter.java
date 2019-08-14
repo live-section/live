@@ -95,8 +95,6 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
                 viewHolder.imageView.setImageBitmap(image);
             } else {
                 Log.d("tag", "Trying to load image of post " + post.getImage());
-                Picasso.get().setLoggingEnabled(true);
-                Picasso.get().setIndicatorsEnabled(true);
                 Picasso.get()
                         .load(post.getImage())
                         .placeholder(R.drawable.logo)
