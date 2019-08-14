@@ -30,7 +30,6 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * A simple {@link Fragment} subclass.
  */
 public class LoginFragment extends Fragment {
-    private FirebaseAuth mAuth;
     private View fragmentView;
     private UserRepository userRepository = new UserRepository();
 
@@ -99,7 +98,7 @@ public class LoginFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         // TODO - move user to inside to save time or w/e?
-        if (mAuth.getCurrentUser() != null) {
+        if (userRepository.isUserLogged()) {
             Navigation.findNavController(fragmentView).navigate(R.id.action_loginFragment_to_liveUserActivity);
         }
     }
