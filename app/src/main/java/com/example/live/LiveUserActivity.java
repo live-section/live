@@ -8,12 +8,14 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -69,7 +71,14 @@ public class LiveUserActivity extends AppCompatActivity implements
             @Override
             public void onClick(View view) {
                 FirebaseAuth.getInstance().signOut();
-                navController.navigate(R.id.action_global_nav_mainActivity_from_liveUserActivity);
+
+                NavOptions.Builder navBuilder = new NavOptions.Builder();
+                NavOptions navOptions = navBuilder.setPopUpTo(navController.getCurrentDestination().getId(), true).build();
+                navController.navigate(R.id.action_global_nav_mainActivity_from_liveUserActivity, null, navOptions);
+
+//                Intent intent = new Intent(this, LiveUserActivity.class);
+//                startActivity(intent);
+//                finish();
             }
         });
 
