@@ -7,7 +7,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -15,8 +14,6 @@ import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -50,7 +47,7 @@ public class PostFragment extends Fragment {
         // String userId = getArguments().getString(UID_KEY);
         viewModel = ViewModelProviders.of(this).get(PostViewModel.class);
 
-        viewModel.getPosts().observe(this, posts -> {
+        viewModel.subscribeToAllPosts().observe(this, posts -> {
             this.replaceRecyclerAdapter(posts, this.rootView);
 
             Toast.makeText(getContext(), "New posts just came live!!!", Toast.LENGTH_SHORT).show();
