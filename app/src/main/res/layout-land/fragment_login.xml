@@ -18,7 +18,7 @@
         app:layout_constraintHorizontal_bias="0.886"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/ic_logo_v2" />
 
     <EditText
         android:id="@+id/loginEmail"
@@ -84,5 +84,19 @@
         app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
+
+    <ProgressBar
+        android:id="@+id/login_progBar"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="156dp"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:indeterminate="false"
+        app:layout_anchorGravity="bottom"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView"
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintStart_toEndOf="@+id/loginPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

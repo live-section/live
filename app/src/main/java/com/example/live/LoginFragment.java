@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +33,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class LoginFragment extends Fragment {
     private View fragmentView;
     private UserRepository userRepository = new UserRepository();
+    ProgressBar mProgressBar;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -47,6 +49,9 @@ public class LoginFragment extends Fragment {
         final TextView loginEmail = fragmentView.findViewById(R.id.loginEmail);
         final TextView loginPass = fragmentView.findViewById(R.id.loginPassword);
 
+        this.mProgressBar = fragmentView.findViewById(R.id.login_progBar);
+        this.mProgressBar.setVisibility(View.INVISIBLE);
+
         Button loginButton = fragmentView.findViewById(R.id.loginButton);
         Button registerButton = fragmentView.findViewById(R.id.navigateToRegistrationButton);
 
@@ -60,6 +65,7 @@ public class LoginFragment extends Fragment {
                 } else {
                     // Validate the user's email & password.
                     if (validateUserLogin(loginEmailText, loginPass.getText())) {
+                        mProgressBar.setVisibility(View.VISIBLE);
                         userRepository.loginUser(loginEmailText.toString(), loginPass.getText().toString())
                                 // TODO - SHOULD THIS BE this instead of getActivity()? should this be code placed in the fragment
                                 .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {

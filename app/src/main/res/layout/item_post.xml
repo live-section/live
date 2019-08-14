@@ -4,11 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#fafafa"
+    android:gravity="center"
     android:orientation="vertical"
-    android:paddingBottom="16dp"
-    android:paddingEnd="16dp"
+    android:paddingStart="16dp"
     android:paddingLeft="16dp"
-    android:paddingStart="16dp">
+    android:paddingEnd="16dp"
+    android:paddingBottom="16dp">
 
     <View
         android:id="@+id/item_divider"
@@ -51,6 +52,7 @@
             android:textSize="18sp"
 
             tools:text="Date is 420 " />
+
         <TextView
             android:id="@+id/sub_item_text"
             android:layout_width="wrap_content"
