@@ -12,9 +12,10 @@
         android:layout_width="177dp"
         android:layout_height="177dp"
         android:layout_marginStart="52dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="52dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.886"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         app:srcCompat="@drawable/logo" />
@@ -23,13 +24,13 @@
         android:id="@+id/loginEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="137dp"
         android:ems="10"
         android:hint="Email:"
         android:inputType="textEmailAddress"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintEnd_toStartOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <EditText
         android:id="@+id/loginPassword"
@@ -48,36 +49,39 @@
         android:id="@+id/textView"
         android:layout_width="333dp"
         android:layout_height="43dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="199dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="199dp"
         android:background="#009C3C3C"
         android:fontFamily="@font/allerta"
         android:text="WELCOME TO LIVE"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/loginButton"
         android:layout_width="158dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="60dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="20dp"
         android:text="GO LIVE"
         app:layout_constraintEnd_toEndOf="@+id/loginPassword"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.545"
         app:layout_constraintStart_toStartOf="@+id/loginPassword"
         app:layout_constraintTop_toBottomOf="@+id/loginPassword" />
 
     <Button
         android:id="@+id/navigateToRegistrationButton"
         android:layout_width="158dp"
-        android:layout_height="48dp"
-        android:layout_marginTop="28dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="@font/allerta"
         android:text="New here?"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+        app:layout_constraintEnd_toEndOf="@+id/loginButton"
         app:layout_constraintStart_toStartOf="@+id/loginButton"
         app:layout_constraintTop_toBottomOf="@+id/loginButton" />
 

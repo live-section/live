@@ -147,8 +147,11 @@ public class LiveUserActivity extends AppCompatActivity implements
             }
         });
 
-        TextView txt = findViewById(R.id.user_email);
-        txt.setText(user.getEmail());
+        if (user != null)
+        {
+            TextView txt = findViewById(R.id.user_email);
+            txt.setText(user.getEmail());
+        }
 
         return true;
     }
