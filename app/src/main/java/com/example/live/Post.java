@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Post {
+    private String postId;
     private String title;
     private String text;
     private String image;
@@ -12,7 +13,8 @@ public class Post {
     private Date date;
     private boolean expanded;
 
-    public Post(String title, String text, String image, String user, Date date) {
+    public Post(String postId, String title, String text, String image, String user, Date date) {
+        this.postId = postId;
         this.title = title;
         this.text = text;
         this.image = image;
@@ -42,5 +44,9 @@ public class Post {
 
     public boolean isExpanded() {
         return expanded;
+    }
+
+    public String getPostId() {
+        return this.postId;
     }
 }

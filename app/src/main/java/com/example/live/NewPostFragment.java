@@ -166,8 +166,6 @@ public class NewPostFragment extends Fragment {
                 }
 
                 if (!isPostInvalid) {
-                    Post post = new Post(postTitle.toString(), postDescription.toString(), null, user.getEmail(), new Date());
-
                     mDb = FirebaseFirestore.getInstance();
 
                     CollectionReference postsCollectionRef = mDb.collection("posts");
@@ -175,6 +173,7 @@ public class NewPostFragment extends Fragment {
                     DocumentReference documentReference = postsCollectionRef.document();
                     String newPostId = documentReference.getId();
 
+                    Post post = new Post(newPostId, postTitle.toString(), postDescription.toString(), null, user.getEmail(), new Date());
                     documentReference.set(post).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {

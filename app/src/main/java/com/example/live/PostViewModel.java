@@ -32,6 +32,6 @@ public class PostViewModel extends ViewModel {
     private PostRepository postRepository = new PostRepository();
 
     public LiveData<List<Post>> subscribeToAllPosts() {
-        return postRepository.registerToAllPosts();
+        return postRepository.registerToAllPosts(null);
     }
 }

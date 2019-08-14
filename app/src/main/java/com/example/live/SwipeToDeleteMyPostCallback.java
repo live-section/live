@@ -1,16 +1,19 @@
 package com.example.live;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnSuccessListener;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class SwipeToDeleteMyPostCallback extends ItemTouchHelper.SimpleCallback {
 
@@ -35,8 +38,14 @@ public class SwipeToDeleteMyPostCallback extends ItemTouchHelper.SimpleCallback 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         int position = viewHolder.getAdapterPosition();
-        viewModel.RemovePost(adapter.getPostAt(position));
-        adapter.removeItem(position);
+        viewModel.removePost(adapter.getPostAt(position)).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.w(TAG, "Woohoo");
+                Toast.makeText(Live.getAppContext(), "Succesfully removed post", Toast.LENGTH_SHORT).show();
+            }
+        });
+        // adapter.removeItem(position);
     }
 
     @Override
