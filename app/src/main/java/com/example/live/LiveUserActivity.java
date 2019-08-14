@@ -22,9 +22,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -36,6 +40,7 @@ public class LiveUserActivity extends AppCompatActivity implements
     public NavController navController;
 
     public NavigationView navigationView;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +146,10 @@ public class LiveUserActivity extends AppCompatActivity implements
                 return false;
             }
         });
+
+        TextView txt = findViewById(R.id.user_email);
+        txt.setText(user.getEmail());
+
         return true;
     }
 }
