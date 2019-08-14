@@ -30,7 +30,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
-    private FirebaseAuth mAuth;
+    private UserRepository userRepository = new UserRepository();
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -40,9 +40,6 @@ public class RegisterFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
-
         // Inflate the layout for this fragment
         final View fragmentView = inflater.inflate(R.layout.fragment_register, container, false);
 
@@ -77,15 +74,12 @@ public class RegisterFragment extends Fragment {
                 }
 
                 if (!errorFound) {
-                    mAuth.createUserWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                    userRepository.createUser(emailEditText.getText().toString(), passwordEditText.getText().toString())
                             .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
-                                        // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "createUserWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        Navigation.findNavController(fragmentView).navigate(R.id.action_registerFragment_to_liveUserActivity);
                                     } else {
                                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }

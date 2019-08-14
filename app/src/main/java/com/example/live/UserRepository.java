@@ -16,4 +16,8 @@ public class UserRepository {
     public Task<AuthResult> loginUser(String email, String password) {
         return mAuth.signInWithEmailAndPassword(email, password);
     }
+
+    public Task<AuthResult> createUser(String email, String password) {
+        return mAuth.createUserWithEmailAndPassword(email, password);
+    }
 }
