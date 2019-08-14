@@ -12,6 +12,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:graph="@navigation/menu_nav_graph"
         tools:layout_editor_absoluteX="152dp"
         tools:layout_editor_absoluteY="68dp"></androidx.recyclerview.widget.RecyclerView>
 

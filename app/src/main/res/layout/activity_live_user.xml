@@ -35,11 +35,12 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header"
         app:menu="@menu/posts_menu">
 
         <Button
             android:id="@+id/menu_sign_out_btn"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:text="Sign out"
             android:layout_gravity="bottom"

@@ -1,6 +1,7 @@
 package com.example.live;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,6 +29,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -60,6 +63,7 @@ public class NewPostFragment extends Fragment {
     private FirebaseStorage mStorage;
     private FirebaseFirestore mDb;
     private boolean hasImageBeenSet = false;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     public NewPostFragment() {
         // Required empty public constructor
@@ -162,7 +166,7 @@ public class NewPostFragment extends Fragment {
                 }
 
                 if (!isPostInvalid) {
-                    Post post = new Post(postTitle.toString(), postDescription.toString(), null, "HOW WOULD I FUCKING KNOW", new Date());
+                    Post post = new Post(postTitle.toString(), postDescription.toString(), null, user.getEmail(), new Date());
 
                     mDb = FirebaseFirestore.getInstance();
 
@@ -230,6 +234,8 @@ public class NewPostFragment extends Fragment {
                 }).addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
+                        ImageCache.verifyStoragePermissions(getActivity());
+                        ImageCache.saveImageToFile(bitmap, ImageCache.UriToStringConverter(uri));
                         linkPostPhotoToPost(newPostId, docRef, uri, fragmentView);
                     }
                 });
