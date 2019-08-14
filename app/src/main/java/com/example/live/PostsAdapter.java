@@ -1,5 +1,6 @@
 package com.example.live;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,22 +86,35 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.ViewHolder> 
         viewHolder.dateTextView.setText("Posted on : " + post.getDate());
 
         if (post.getImage() != null) {
-            Log.d("tag", "Trying to load image of post " + post.getImage());
-            Picasso.get().setLoggingEnabled(true);
-            Picasso.get().setIndicatorsEnabled(true);
-            Picasso.get()
-                    .load(post.getImage())
-                    .placeholder(R.drawable.logo)
-                    .into(viewHolder.imageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                        }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e("tag", "Failed to load image of post " + e.getMessage());
-                        }
-                    });
+            // Check if exists locally
+            String fileName = ImageCache.UriToStringConverter(post.getImage());
+            Bitmap image = ImageCache.tryLoadImageFromFile(fileName);
+
+            if (image != null) {
+                viewHolder.imageView.setImageBitmap(image);
+            } else {
+                Log.d("tag", "Trying to load image of post " + post.getImage());
+                Picasso.get().setLoggingEnabled(true);
+                Picasso.get().setIndicatorsEnabled(true);
+                Picasso.get()
+                        .load(post.getImage())
+                        .placeholder(R.drawable.logo)
+                        .into(viewHolder.imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                                // download image locally
+                                Log.d("tag", "Donwloading image locally of post " + post.getTitle() + " ");
+                                Bitmap img = ImageCache.imageView2Bitmap(viewHolder.imageView);
+                                ImageCache.saveImageToFile(img, ImageCache.UriToStringConverter(post.getImage()));
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Log.e("tag", "Failed to load image of post " + e.getMessage());
+                            }
+                        });
+            }
         }
 
         viewHolder.itemView.setOnClickListener(v -> {
