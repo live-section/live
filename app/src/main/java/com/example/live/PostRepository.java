@@ -51,13 +51,15 @@ public class PostRepository {
 
         allPosts = new MutableLiveData<>();
 
-        Query firebaseQuery = postsCollectionRef
+        Query baseFirebaseQuery = postsCollectionRef
                 .orderBy("date", Query.Direction.DESCENDING);
 
         if (userEmail != null) {
-            firebaseQuery = firebaseQuery
+            baseFirebaseQuery = baseFirebaseQuery
                     .whereEqualTo("user", userEmail);
         }
+
+        final Query firebaseQuery = baseFirebaseQuery;
 
         firebaseQuery
                 .get()
@@ -74,8 +76,7 @@ public class PostRepository {
 
                             allPosts.setValue(currentPosts);
 
-                            postsCollectionRef
-                                    .orderBy("date", Query.Direction.DESCENDING)
+                            firebaseQuery
                                     .addSnapshotListener(new EventListener<QuerySnapshot>() {
                                         @Override
                                         public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {

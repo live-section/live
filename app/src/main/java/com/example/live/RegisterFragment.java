@@ -80,6 +80,7 @@ public class RegisterFragment extends Fragment {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "createUserWithEmail:success");
+                                        Navigation.findNavController(fragmentView).navigate(R.id.action_registerFragment_to_liveUserActivity);
                                     } else {
                                         Toast.makeText(getContext(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
