@@ -111,10 +111,6 @@ public class LiveUserActivity extends AppCompatActivity implements
                 navController.navigate(R.id.nav_MyPost_Fragment);
                 break;
 
-            case R.id.menu_settings:
-                navController.navigate(R.id.nav_Post_Fragment);
-                break;
-
             case R.id.menu_nav_graph:
                 navController.navigate(R.id.nav_Post_Fragment);
                 break;
