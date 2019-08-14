@@ -30,10 +30,11 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  * A simple {@link Fragment} subclass.
  */
 public class RegisterFragment extends Fragment {
-    private UserRepository userRepository = new UserRepository();
+    private UserRepository userRepository;
 
     public RegisterFragment() {
         // Required empty public constructor
+        userRepository = UserRepository.getInstance();
     }
 
 

@@ -6,8 +6,22 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class UserRepository {
-    // Initialize Firebase Auth
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseAuth mAuth;
+
+    private static UserRepository instance;
+
+    private UserRepository() {
+        // Initialize Firebase Auth
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    public static UserRepository getInstance() {
+        if (instance == null) {
+            instance = new UserRepository();
+        }
+
+        return instance;
+    }
 
     public boolean isUserLogged() {
         return mAuth.getCurrentUser() != null;

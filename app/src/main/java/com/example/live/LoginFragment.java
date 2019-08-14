@@ -31,10 +31,11 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
  */
 public class LoginFragment extends Fragment {
     private View fragmentView;
-    private UserRepository userRepository = new UserRepository();
+    private UserRepository userRepository;
 
     public LoginFragment() {
         // Required empty public constructor
+        userRepository = UserRepository.getInstance();
     }
 
 

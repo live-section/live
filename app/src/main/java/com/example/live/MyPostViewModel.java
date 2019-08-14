@@ -24,7 +24,11 @@ import java.util.Map;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class MyPostViewModel extends ViewModel {
-    private PostRepository postRepository = new PostRepository();
+    private PostRepository postRepository;
+
+    public MyPostViewModel() {
+        postRepository = PostRepository.getInstance();
+    }
 
     public LiveData<List<Post>> getPosts() {
         return postRepository.registerToAllMyPosts();

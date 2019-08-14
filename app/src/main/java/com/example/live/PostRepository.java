@@ -32,7 +32,20 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PostRepository {
     private MutableLiveData<List<Post>> allPosts;
-    private CollectionReference postsCollectionRef = FirebaseFirestore.getInstance().collection("posts");
+    private FirebaseFirestore firestoreDb;
+    private static PostRepository instance;
+
+    public static PostRepository getInstance() {
+        if (instance == null) {
+            instance = new PostRepository();
+        }
+
+        return instance;
+    }
+
+    private PostRepository() {
+        firestoreDb = FirebaseFirestore.getInstance();
+    }
 
     public LiveData<List<Post>> registerToAllMyPosts() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -51,7 +64,7 @@ public class PostRepository {
 
         allPosts = new MutableLiveData<>();
 
-        Query baseFirebaseQuery = postsCollectionRef
+        Query baseFirebaseQuery = firestoreDb.collection("posts")
                 .orderBy("date", Query.Direction.DESCENDING);
 
         if (userEmail != null) {
@@ -109,7 +122,7 @@ public class PostRepository {
             return null;
         }
         else {
-            return postsCollectionRef
+            return firestoreDb.collection("posts")
                     .document(id.getPostId())
                     .delete()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -125,6 +138,8 @@ public class PostRepository {
             });
         }
     }
+
+
 
     public static Post DeserializeToPost(QueryDocumentSnapshot document) {
         Map<String, Object> objectData = document.getData();

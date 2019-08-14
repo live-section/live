@@ -29,7 +29,11 @@ import javax.annotation.Nullable;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PostViewModel extends ViewModel {
-    private PostRepository postRepository = new PostRepository();
+    private PostRepository postRepository;
+
+    public PostViewModel() {
+        postRepository = PostRepository.getInstance();
+    }
 
     public LiveData<List<Post>> subscribeToAllPosts() {
         return postRepository.registerToAllPosts(null);
