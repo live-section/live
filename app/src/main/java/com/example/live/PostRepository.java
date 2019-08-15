@@ -1,20 +1,18 @@
 package com.example.live;
 
+import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.room.Room;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -37,6 +35,7 @@ public class PostRepository {
     private FirebaseFirestore firestoreDb;
     private static PostRepository instance;
     private UserRepository userRepository;
+    private AppDatabase appCacheDb;
 
     public static PostRepository getInstance() {
         if (instance == null) {
@@ -49,6 +48,15 @@ public class PostRepository {
     private PostRepository() {
         firestoreDb = FirebaseFirestore.getInstance();
         userRepository = UserRepository.getInstance();
+
+        appCacheDb = Room.databaseBuilder(Live.getAppContext(),
+                AppDatabase.class, "post").build();
+
+//        allPosts = new MutableLiveData<>();
+//        allPosts.setValue(appCacheDb.postDao().getAllPosts());
+//
+//        allMyPosts = new MutableLiveData<>();
+//        allMyPosts.setValue(appCacheDb.postDao().getAllMyPosts(userRepository.getCurrentUser().getEmail()));
     }
 
     public LiveData<List<Post>> registerToAllMyPosts() {
@@ -61,16 +69,19 @@ public class PostRepository {
         }
     }
 
-    public LiveData<List<Post>> registerToAllPosts(@Nullable String userEmail) {
+    public MutableLiveData registerToAllPosts(@Nullable String userEmail) {
+        MutableLiveData posts = new MutableLiveData<>();
+
+        // This part handles cases where we want to get all posts, and we have them
+        // fetched (this isn't the first time)
         if (userEmail == null && allPosts != null) {
             return allPosts;
         }
 
+        // Cases for getting posts for a specific user, and we have them cached
         if (userEmail != null && allMyPosts != null) {
             return allMyPosts;
         }
-
-        MutableLiveData posts = new MutableLiveData<>();
 
         Query baseFirebaseQuery = firestoreDb.collection("posts")
                 .orderBy("date", Query.Direction.DESCENDING);
@@ -78,9 +89,42 @@ public class PostRepository {
         if (userEmail != null) {
             baseFirebaseQuery = baseFirebaseQuery
                     .whereEqualTo("user", userEmail);
+
+            allMyPosts = new MutableLiveData<>();
+        } else {
+            allPosts = new MutableLiveData<>();
         }
 
         final Query firebaseQuery = baseFirebaseQuery;
+
+        // Cases where we want to get posts for a specific user, and this IS the first time
+        if (userEmail != null && allMyPosts == null) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    // Insert Data
+                    posts.postValue(appCacheDb.postDao().getAllMyPosts(userEmail));
+                }
+            });
+
+            // posts.setValue(appCacheDb.postDao().getAllMyPosts(userEmail));
+
+            registerToAllMyChanges(firebaseQuery, posts, userEmail);
+            return posts;
+        }
+
+        if (userEmail == null && allPosts == null) {
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    posts.postValue(appCacheDb.postDao().getAllPosts());
+
+                }
+            });
+
+            registerToChanges(firebaseQuery, posts);
+            return posts;
+        }
 
         firebaseQuery
                 .get()
@@ -97,24 +141,7 @@ public class PostRepository {
 
                             posts.setValue(currentPosts);
 
-                            firebaseQuery
-                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
-                                            if (e != null) {
-                                                Log.w(TAG, "Listen failed.", e);
-                                                return;
-                                            }
-
-                                            List<Post> tempPosts = new ArrayList<>();
-
-                                            for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-                                                tempPosts.add(DeserializeToPost(document));
-                                            }
-
-                                            posts.setValue(tempPosts);
-                                        }
-                                    });
+                            registerToChanges(firebaseQuery, posts);
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
@@ -131,6 +158,64 @@ public class PostRepository {
         }
 
         return posts;
+    }
+
+    private void registerToAllMyChanges(Query firebaseQuery, MutableLiveData posts, String user) {
+        firebaseQuery
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        List<Post> tempPosts = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            tempPosts.add(DeserializeToPost(document));
+                        }
+
+                        posts.setValue(tempPosts);
+                        allMyPosts.setValue(tempPosts);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                appCacheDb.postDao().deleteAllMyPosts(user);
+                                appCacheDb.postDao().insertAll(tempPosts);
+                            }
+                        });
+                    }
+                });
+    }
+
+    private void registerToChanges(Query firebaseQuery, MutableLiveData posts) {
+        firebaseQuery
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        List<Post> tempPosts = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            tempPosts.add(DeserializeToPost(document));
+                        }
+
+                        posts.setValue(tempPosts);
+                        allPosts.setValue(tempPosts);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                appCacheDb.postDao().deleteAll();
+                                appCacheDb.postDao().insertAll(tempPosts);
+                            }
+                        });
+                    }
+                });
     }
 
     public Task<Void> removePost(Post id) {
