@@ -1,5 +1,6 @@
 package com.example.live;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -90,14 +91,27 @@ public class PostRepository {
         final Query firebaseQuery = baseFirebaseQuery;
 
         if (userEmail != null && allMyPosts == null) {
-            posts.setValue(appCacheDb.postDao().getAllMyPosts(userEmail));
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    // Insert Data
+                    posts.postValue(appCacheDb.postDao().getAllMyPosts(userEmail));
+                }
+            });
+
+            // posts.setValue(appCacheDb.postDao().getAllMyPosts(userEmail));
 
             registerToChanges(firebaseQuery, posts);
             return posts;
         }
 
         if (userEmail == null && allPosts == null) {
-            posts.setValue(appCacheDb.postDao().getAllPosts());
+            AsyncTask.execute(new Runnable() {
+                @Override
+                public void run() {
+                    posts.postValue(appCacheDb.postDao().getAllPosts());
+                }
+            });
 
             registerToChanges(firebaseQuery, posts);
             return posts;
@@ -154,8 +168,13 @@ public class PostRepository {
                         }
 
                         posts.setValue(tempPosts);
-                        appCacheDb.postDao().deleteAll();
-                        appCacheDb.postDao().insertAll(tempPosts);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                appCacheDb.postDao().deleteAll();
+                                appCacheDb.postDao().insertAll(tempPosts);
+                            }
+                        });
                     }
                 });
     }
