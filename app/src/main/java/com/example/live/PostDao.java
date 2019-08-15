@@ -23,4 +23,7 @@ public interface PostDao {
 
     @Query("DELETE FROM post")
     void deleteAll();
+
+    @Query("DELETE FROM post WHERE user = :user")
+    void deleteAllMyPosts(String user);
 }

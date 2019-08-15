@@ -72,10 +72,13 @@ public class PostRepository {
     public MutableLiveData registerToAllPosts(@Nullable String userEmail) {
         MutableLiveData posts = new MutableLiveData<>();
 
+        // This part handles cases where we want to get all posts, and we have them
+        // fetched (this isn't the first time)
         if (userEmail == null && allPosts != null) {
             return allPosts;
         }
 
+        // Cases for getting posts for a specific user, and we have them cached
         if (userEmail != null && allMyPosts != null) {
             return allMyPosts;
         }
@@ -86,10 +89,15 @@ public class PostRepository {
         if (userEmail != null) {
             baseFirebaseQuery = baseFirebaseQuery
                     .whereEqualTo("user", userEmail);
+
+            allMyPosts = new MutableLiveData<>();
+        } else {
+            allPosts = new MutableLiveData<>();
         }
 
         final Query firebaseQuery = baseFirebaseQuery;
 
+        // Cases where we want to get posts for a specific user, and this IS the first time
         if (userEmail != null && allMyPosts == null) {
             AsyncTask.execute(new Runnable() {
                 @Override
@@ -101,7 +109,7 @@ public class PostRepository {
 
             // posts.setValue(appCacheDb.postDao().getAllMyPosts(userEmail));
 
-            registerToChanges(firebaseQuery, posts);
+            registerToAllMyChanges(firebaseQuery, posts, userEmail);
             return posts;
         }
 
@@ -110,6 +118,7 @@ public class PostRepository {
                 @Override
                 public void run() {
                     posts.postValue(appCacheDb.postDao().getAllPosts());
+
                 }
             });
 
@@ -151,6 +160,35 @@ public class PostRepository {
         return posts;
     }
 
+    private void registerToAllMyChanges(Query firebaseQuery, MutableLiveData posts, String user) {
+        firebaseQuery
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(TAG, "Listen failed.", e);
+                            return;
+                        }
+
+                        List<Post> tempPosts = new ArrayList<>();
+
+                        for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                            tempPosts.add(DeserializeToPost(document));
+                        }
+
+                        posts.setValue(tempPosts);
+                        allMyPosts.setValue(tempPosts);
+                        AsyncTask.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                appCacheDb.postDao().deleteAllMyPosts(user);
+                                appCacheDb.postDao().insertAll(tempPosts);
+                            }
+                        });
+                    }
+                });
+    }
+
     private void registerToChanges(Query firebaseQuery, MutableLiveData posts) {
         firebaseQuery
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -168,6 +206,7 @@ public class PostRepository {
                         }
 
                         posts.setValue(tempPosts);
+                        allPosts.setValue(tempPosts);
                         AsyncTask.execute(new Runnable() {
                             @Override
                             public void run() {
